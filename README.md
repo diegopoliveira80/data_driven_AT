@@ -7,35 +7,40 @@ Tambem uma integração com LLM para ser capaz não apenas de trazer os dados da
 2. Salvar a aplcação em um diretorio separado
 3. Abrir pasta my_app em um notebook
 4. Criar ambiente virtual para receber as instalações das bibliotecas necessarias
-```python
+```bash
 python -m venv venv
 ```
 
 5. Ativar o ambiente
-```python
+```bash
 venv/scripts/activate
 ```
 
 6. Instalar dependências requirements.txt
-```python
+```bash
 pip install -r requirements.txt
 ```
 
 7. Criar arquivo .env e inserir API_KEY GEMINI para funcionamento do LLM conforme estrutura mencionada acima
 comando para ios ou windows
-```python
+```bash
 export GOOGLE_API_KEY=<token>
 $env:GEMINI_API_KEY_PRO<token>
 ```
 
-8. Iniciar uvicorn app/main.py no terminal para criar o localhost
-```python
+8. Desative o ambiente virtual quando terminar
+```bash
+venv/scripts/deactivate
+```
+
+9. Iniciar uvicorn app/main.py no terminal para criar o localhost
+```bash
 uvicorn main:app --reload
 ```
 
 
 9. Iniciar streamlit run app.py no terminal para visualizar o front-end
-```python
+```bash
 streamlit run app.py
 ```
 
