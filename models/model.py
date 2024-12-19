@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Dict,List
 
 class PlayerRequest(BaseModel):
     match_id: int
@@ -18,3 +19,21 @@ class PlayerResponse(BaseModel):
     Goal: int
     Cartao_Amarelo: int
     Cartao_Vermelho: int
+    
+
+class Summaryrequest(BaseModel):
+    stats_jogador1: Dict
+    stats_jogador2: Dict
+    escalacao: Dict
+    agent_prompt: str
+    
+    
+class SummaryResponse(BaseModel):
+    result: str
+    
+    
+class SummaryMatchRequest(BaseModel):
+    partida: List
+    statist: List
+    escalacao: Dict
+    agent_prompt: str

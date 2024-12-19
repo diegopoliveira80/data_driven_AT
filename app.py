@@ -7,6 +7,7 @@ from routers.agent import get_sport_specialist_comments_about_match
 from routers.competitions import get_player_stats
 from mplsoccer import Radar, FontManager, grid
 import matplotlib.pyplot as plt
+from models.model import PlayerRequest,PlayerResponse
 
 
 st.set_page_config(layout="wide",
@@ -54,10 +55,14 @@ def load_events(match_id: int):
     
 @st.cache_data()
 def load_stats(match_id: int, player_name: str) -> json:
-    api = f'http://127.0.0.1:8000/api/player_profile/?match_id={match_id}&player_name={player_name}'    
+    api = f'http://127.0.0.1:8000/api/player_profile/'  
+    payload = {
+        "match_id": match_id,
+        "player_name": player_name
+    }
     try:
         # Fazer a requisição
-        response = requests.get(api)
+        response = requests.post(api,json=payload)
         
         # Verificar o status da resposta
         if response.status_code != 200:
@@ -69,7 +74,7 @@ def load_stats(match_id: int, player_name: str) -> json:
         
         # Tentar carregar a resposta como JSON
         try:
-            return json.loads(response.json())
+            return response.json()
         except ValueError as e:
             raise Exception(f"Erro ao decodificar JSON: {e} - Resposta: {response.text}")
     
@@ -77,13 +82,32 @@ def load_stats(match_id: int, player_name: str) -> json:
         raise Exception(f"Erro na requisição: {e}")
         
 
+@st.cache_data()
+def load_summary(stats_jogador1,stats_jogador2,escalacao,agent_prompt):
+    api = f'http://127.0.0.1:8000/api/match_summary/'
+    payload = {
+        'stats_jogador1': stats_jogador1,
+        'stats_jogador2': stats_jogador2,
+        'escalacao': escalacao,
+        'agent_prompt': agent_prompt
+    }
+    response = requests.post(api,json=payload)
+    return response.json()['result']
 
-#def load_summary(match_details, line_ups):
-    #match_details_json = json.dumps(match_details)  # Lista de dicionários para JSON
-    #line_ups_json = json.dumps(line_ups)  # Dicionário para JSON
-    #api = f'http://127.0.0.1:8000/api/match_summary/?match_details={match_details_json}&line_ups={line_ups_json}'    
-    #response = requests.get(api)
-    # return json.loads(response.json())
+
+def load_summary_match(dados_partida_selecionada,
+                                      lista_statisticas,
+                                      escalacao,
+                                      agent_prompt):
+    api = f'http://127.0.0.1:8000/api/match_summary_match/'
+    payload = {
+        'partida': [dados_partida_selecionada],
+        'statist': [lista_statisticas],
+        'escalacao': escalacao,
+        'agent_prompt': agent_prompt
+    }
+    response = requests.post(api,json=payload)
+    return response.json()['result']
 
 ######################################################### Streamlit Sidebar
 st.sidebar.title("Football Match Selector")
@@ -180,8 +204,6 @@ with tab1:
     st.write(df_partidas)
 
 ################################################# Resumo da partida
-from statsbombpy import sb
-
 
 with tab2:
     time1 = load_lineups(match_id=match_id)[0]
@@ -242,10 +264,10 @@ with tab2:
                     Comece sua análise agora e envolva seu público com seus insights.
                     """
                 
-                st.write(get_sport_specialist_comments_about_match(dados_partida_selecionada,
-                                                                    lista_statisticas,
-                                                                    escalacao,
-                                                                    agent_prompt))
+                st.write(load_summary_match(dados_partida_selecionada,
+                                            lista_statisticas,
+                                            escalacao,
+                                            agent_prompt))
     
     
  ################################################# ESCALAÇÃO INICIAL
@@ -392,7 +414,7 @@ with tab2:
                     Finalize com uma conclusão comparativa geral destacando o jogador com maior impacto no jogo."
                     """
                 
-                st.write(get_sport_specialist_comments_about_match(stats_jogador1,
-                                                                       stats_jogador2,
-                                                                       escalacao,
-                                                                       agent_prompt))
+                st.write(load_summary(stats_jogador1,
+                                stats_jogador2,
+                                escalacao,
+                                agent_prompt))

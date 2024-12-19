@@ -5,7 +5,7 @@ import json
 from copy import copy
 import numpy as np
 from routers.agent import get_sport_specialist_comments_about_match
-from models.model import PlayerRequest, PlayerResponse
+from models.model import PlayerRequest, PlayerResponse, Summaryrequest, SummaryResponse, SummaryMatchRequest
 from pydantic import BaseModel
 
 
@@ -49,10 +49,12 @@ def get_matches(match_id: int) -> str:
         sb.events(match_id=match_id).to_dict(orient='records'))
 
     
-@router.get('/player_profile/')
-def get_player_stats(match_id: int, player_name: str):
-    events = sb.events(match_id=match_id)
-    player_events = events[events['player'] == player_name]
+
+@router.post('/player_profile/', response_model=PlayerResponse)
+def get_player_stats(request:PlayerRequest):
+
+    events = sb.events(match_id=request.match_id)
+    player_events = events[events['player'] == request.player_name]
     
     def safe_filter(df, column, condition):
         """Aplica um filtro seguro ao DataFrame, retornando False caso a coluna não exista."""
@@ -97,19 +99,30 @@ def get_player_stats(match_id: int, player_name: str):
         "Goal": player_events[
             safe_filter(player_events, 'shot_outcome', lambda col: col == 'Goal')
         ].shape[0],
-        "Cartao Amarelo": player_events[
+        "Cartao_Amarelo": player_events[
             safe_filter(player_events, 'foul_committed_card', lambda col: col == 'Yellow Card')
         ].shape[0],
-        "Cartao Vermelho": player_events[
+        "Cartao_Vermelho": player_events[
             safe_filter(player_events, 'foul_committed_card', lambda col: col == 'Red Card')
         ].shape[0],
     }
 
-    return json.dumps(stats)
+    return PlayerResponse(**stats)
 
 
-#@router.get('/match_summary/')
-#def get_match_summary(match_details: dict, line_ups: list):
-#    match_details_dict = json.loads(match_details)  # Converte match_details para uma lista de dicionários
-#    line_ups_dict = json.loads(line_ups)  # Converte line_ups para um dicionário
-#    return get_sport_specialist_comments_about_match(match_details_dict,line_ups_dict) 
+@router.post('/match_summary/', response_model=SummaryResponse)
+def get_player_stats(request:Summaryrequest):
+    response = get_sport_specialist_comments_about_match(request.stats_jogador1,
+                                                         request.stats_jogador2,
+                                                         request.escalacao,
+                                                         request.agent_prompt)
+    return SummaryResponse(result=response)
+
+
+@router.post('/match_summary_match/', response_model=SummaryResponse)
+def get_player_stats(request:SummaryMatchRequest):
+    response = get_sport_specialist_comments_about_match(request.partida,
+                                                         request.statist,
+                                                         request.escalacao,
+                                                         request.agent_prompt)
+    return SummaryResponse(result=response)

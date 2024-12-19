@@ -24,8 +24,7 @@ pip install -r requirements.txt
 7. Criar arquivo .env e inserir API_KEY GEMINI para funcionamento do LLM conforme estrutura mencionada acima
 comando para ios ou windows
 ```bash
-export GOOGLE_API_KEY=<token>
-$env:GEMINI_API_KEY_PRO<token>
+GEMINI_API_KEY_PRO=your-api-key-here
 ```
 
 8. Desative o ambiente virtual quando terminar
@@ -47,5 +46,33 @@ streamlit run app.py
 Após o passo a passo acima a aplicação estará funcionando em seu localhost
 
 # Exemplos de entrada e saída das funcionalidades.
+
+##INPUT
+```python
+{   
+    "match_id":"8650",
+    "player_name":'Kevin De Bruyne'
+}
 ```
 
+##OUTPUT
+```python
+{
+    "passes_completed":33,
+    "passes_attempted":42,
+    "shots":3,
+    "shots_on_target":0,
+    "fouls_committed":0,
+    "fouls_won":1,
+    "tackles":0,
+    "interceptions":0,
+    "dribbles_successful":2,
+    "dribbles_attempted":2,
+    "Goal":1,
+    "Cartao_Amarelo":0,
+    "Cartao_Vermelho":0
+}
+```
+
+# Conclusão
+A aplicação foi desenvolvida com o objetivo de trazer insghts relevantes das partidas e jogadores selecionados.

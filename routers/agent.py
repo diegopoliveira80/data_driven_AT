@@ -3,6 +3,7 @@ from langchain.chains import LLMChain
 from langchain_google_genai import GoogleGenerativeAI
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
+from dotenv import load_dotenv
 
 import os
 import json
@@ -10,7 +11,7 @@ import yaml
 from fastapi import APIRouter
 
 router = APIRouter()
-
+load_dotenv()
 
 def filter_starting_xi(line_ups: str) -> dict:
     """
@@ -52,7 +53,7 @@ def get_sport_specialist_comments_about_match(dados1: str,
     dados3 = filter_starting_xi(dados3)
 
     GEMINI_API_KEY_PRO = os.getenv("GEMINI_API_KEY_PRO")
-    llm = GoogleGenerativeAI(google_api_key="AIzaSyCuyRh5ph4O6ldVanhlYCiP7xCMEhdjphU",
+    llm = GoogleGenerativeAI(google_api_key=GEMINI_API_KEY_PRO,
                              model="gemini-pro",
                              temperature=0.4)
     input_variables={"dados1": yaml.dump(dados1),
