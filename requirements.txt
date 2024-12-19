@@ -190,6 +190,7 @@ narwhals==1.18.3
     # via altair
 numpy==2.2.0
     # via
+    #   -r requirements.in
     #   contourpy
     #   langchain
     #   langchain-community
@@ -211,6 +212,7 @@ packaging==24.2
     #   streamlit
 pandas==2.2.3
     # via
+    #   -r requirements.in
     #   mplsoccer
     #   seaborn
     #   statsbombpy
@@ -274,11 +276,14 @@ python-dateutil==2.9.0.post0
     #   matplotlib
     #   pandas
 python-dotenv==1.0.1
-    # via pydantic-settings
+    # via
+    #   -r requirements.in
+    #   pydantic-settings
 pytz==2024.2
     # via pandas
 pyyaml==6.0.2
     # via
+    #   -r requirements.in
     #   langchain
     #   langchain-community
     #   langchain-core
@@ -288,6 +293,7 @@ referencing==0.35.1
     #   jsonschema-specifications
 requests==2.32.3
     # via
+    #   -r requirements.in
     #   google-api-core
     #   langchain
     #   langchain-community

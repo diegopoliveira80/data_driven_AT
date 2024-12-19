@@ -8,6 +8,10 @@ mplsoccer
 matplotlib
 wikipedia
 pydantic
-fastapi
 uvicorn
 mplsoccer
+pandas
+numpy
+python-dotenv
+requests
+pyyaml
